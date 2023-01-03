@@ -1,39 +1,32 @@
 import {React, useState} from 'react';
 import Button from './button.js';
 
-export default function ButtonCluster () {
-    const [buttons_arr, setButtonsArr] = useState([
-        { text: "Main Menu", selected: true },
-        { text: "Fractals", selected: false },
-        { text: "AI", selected: false }
-    ]);
-
+export default function ButtonCluster (props) {
+    const [selected_button_id, setSelectedButton] = useState(props.selected_button_id);
+    const [buttons, setButtons] = useState(props.buttons);
     const buttons_bfr = [];
 
-    function getButtonElIDByNumber(num) {
-        return "mw_button_" + num;
+    function getButtonElIDByID(id) {
+        return "mw_button_" + id;
     }
 
-    for (let i = 0; i < buttons_arr.length; i++) {
+    for (let i = 0; i < buttons.length; i++) {
+        const el_id = getButtonElIDByID(i);
         buttons_bfr.push(
             <Button
-                key={ getButtonElIDByNumber(i) }
-                text={ buttons_arr[i].text }
-                selected={ buttons_arr[i].selected }
-                id={ getButtonElIDByNumber(i) }
+                id={ i }
+                key={ el_id }
+                el_id={ el_id }
+                text={ buttons[i].text }
+                selected={ selected_button_id === i }
                 onClick={ (id) => { changeButton(id) } }
             />
         );
     }
 
     function changeButton(button_id) {
-        const new_buttons_arr = buttons_arr.slice();
-
-        for (let i = 0; i < buttons_bfr.length; i++) {
-            new_buttons_arr[i].selected = (getButtonElIDByNumber(i) == button_id ? true : false);
-        }
-
-        setButtonsArr(new_buttons_arr);
+        setSelectedButton(button_id);
+        props.onButtonChange(button_id);
     }
 
     return (
